@@ -1,0 +1,56 @@
+.app-header {
+  border-bottom: 1px solid #e2e2e2;
+}
+
+.app-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0.9rem 1rem;
+}
+
+.brand {
+  font-weight: 700;
+  text-decoration: none;
+  color: #111;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+}
+
+.nav-links a {
+  position: relative;
+  text-decoration: none;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -0.6rem;
+  right: -0.8rem;
+  background: #2952e3;
+  color: #fff;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  padding: 0.05rem 0.35rem;
+}
+
+.user-email {
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.logout-btn {
+  border: none;
+  background: none;
+  color: #2952e3;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0;
+}

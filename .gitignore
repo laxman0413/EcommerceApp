@@ -1,0 +1,103 @@
+# ========================
+# .NET
+# ========================
+
+## Build output
+bin/
+obj/
+out/
+
+## Publish output
+publish/
+*.pubxml
+*.pubxml.user
+
+## User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+
+## Logs
+*.log
+logs/
+
+## NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+!packages/repositories.config
+nuget.config
+
+## Secrets & config overrides
+appsettings.Development.json
+appsettings.Production.json
+secrets.json
+*.pfx
+*.p12
+
+## Test results
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+coverage/
+
+## Rider / ReSharper
+.idea/
+*.sln.iml
+_ReSharper*/
+*.ReSharper
+
+## JetBrains
+.idea/
+
+# ========================
+# Angular
+# ========================
+
+## Dependencies
+node_modules/
+
+## Build output
+dist/
+tmp/
+out-tsc/
+
+## Cache
+.angular/
+.cache/
+.npm/
+.eslintcache
+
+## Environment files
+src/environments/environment.development.ts
+src/environments/environment.prod.ts
+
+## Coverage
+coverage/
+
+## Misc
+*.js.map
+
+# ========================
+# General
+# ========================
+
+## OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+## Editor
+.vscode/
+*.swp
+*.swo
+.idea/
+
+## Env / secrets
+.env
+.env.*
+*.key

@@ -1,0 +1,33 @@
+<article class="product-card">
+  <div class="product-image">
+    @if (product.imageUrl) {
+      <img [src]="product.imageUrl" [alt]="product.name" />
+    } @else {
+      <div class="product-image-placeholder">No image</div>
+    }
+  </div>
+
+  <div class="product-body">
+    <span class="product-category">{{ product.category }}</span>
+    <h3 class="product-name">{{ product.name }}</h3>
+    @if (product.description) {
+      <p class="product-description">{{ product.description }}</p>
+    }
+    <div class="product-footer">
+      <span class="product-price">{{ product.price | currency }}</span>
+      @if (product.stockQuantity > 0) {
+        <span class="product-stock in-stock">In stock ({{ product.stockQuantity }})</span>
+      } @else {
+        <span class="product-stock out-of-stock">Out of stock</span>
+      }
+    </div>
+    <button
+      type="button"
+      class="add-to-cart-btn"
+      [disabled]="product.stockQuantity <= 0"
+      (click)="onAddToCart()"
+    >
+      Add to Cart
+    </button>
+  </div>
+</article>

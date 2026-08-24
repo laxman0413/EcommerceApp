@@ -1,0 +1,29 @@
+<div class="cart-item">
+  @if (item.imageUrl) {
+    <img class="cart-item-image" [src]="item.imageUrl" [alt]="item.productName" />
+  }
+
+  <div class="cart-item-details">
+    <span class="cart-item-name">{{ item.productName ?? item.productId }}</span>
+    @if (item.unitPrice !== undefined) {
+      <span class="cart-item-price">{{ item.unitPrice | currency }} each</span>
+    }
+  </div>
+
+  <div class="cart-item-quantity">
+    <label [attr.for]="'qty-' + item.productId">Qty</label>
+    <input
+      [id]="'qty-' + item.productId"
+      type="number"
+      min="1"
+      [value]="item.quantity"
+      (change)="onQuantityInput($any($event.target).value)"
+    />
+  </div>
+
+  @if (item.lineTotal !== undefined) {
+    <span class="cart-item-total">{{ item.lineTotal | currency }}</span>
+  }
+
+  <button type="button" class="remove-btn" (click)="onRemove()">Remove</button>
+</div>

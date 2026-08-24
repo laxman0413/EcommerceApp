@@ -1,0 +1,30 @@
+<section class="filters" [formGroup]="filterForm">
+  <input
+    type="text"
+    formControlName="search"
+    placeholder="Search products..."
+    aria-label="Search products"
+  />
+  <input
+    type="text"
+    formControlName="category"
+    placeholder="Category"
+    aria-label="Filter by category"
+  />
+  <label class="in-stock-label">
+    <input type="checkbox" formControlName="inStockOnly" />
+    In stock only
+  </label>
+</section>
+
+@if (statusMessage) {
+  <div class="status-banner">{{ statusMessage }}</div>
+}
+
+<section class="product-grid">
+  @for (product of (products$ | async); track product.id) {
+    <app-product [product]="product" (addToCart)="onAddToCart($event)" />
+  } @empty {
+    <p class="empty-state">No products found.</p>
+  }
+</section>
