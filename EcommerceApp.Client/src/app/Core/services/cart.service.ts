@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import {
   AddCartItemDto,
@@ -28,20 +28,20 @@ export class CartService {
 
   addItem(dto: AddCartItemDto): Observable<Cart> {
     return this.http
-      .post<unknown>(`${this.apiUrl}/items`, dto)
-      .pipe(switchMap(() => this.loadCart()));
+      .post<Cart>(`${this.apiUrl}/items`, dto)
+      .pipe(tap((cart) => this.cartSubject.next(cart)));
   }
 
   updateItem(productId: string, dto: UpdateCartItemDto): Observable<Cart> {
     return this.http
-      .put<unknown>(`${this.apiUrl}/items/${productId}`, dto)
-      .pipe(switchMap(() => this.loadCart()));
+      .put<Cart>(`${this.apiUrl}/items/${productId}`, dto)
+      .pipe(tap((cart) => this.cartSubject.next(cart)));
   }
 
   removeItem(productId: string): Observable<Cart> {
     return this.http
-      .delete<unknown>(`${this.apiUrl}/items/${productId}`)
-      .pipe(switchMap(() => this.loadCart()));
+      .delete<Cart>(`${this.apiUrl}/items/${productId}`)
+      .pipe(tap((cart) => this.cartSubject.next(cart)));
   }
 
   checkout(dto: CheckoutRequestDto): Observable<CheckoutResult> {

@@ -14,19 +14,26 @@ export interface RefreshTokenRequestDto {
   refreshToken: string;
 }
 
-// Response body isn't documented in the OpenAPI spec (200 with no schema);
-// field names assumed from typical ASP.NET JWT auth responses.
+export interface AuthUserDto {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: string;
+}
+
 export interface AuthResponse {
   accessToken: string;
+  accessTokenExpiresAt: string;
   refreshToken: string;
-  expiresAtUtc?: string;
-  email?: string;
-  firstName?: string;
-  lastName?: string;
+  refreshTokenExpiresAt: string;
+  user: AuthUserDto;
 }
 
 export interface CurrentUser {
+  id: string;
   email: string;
   firstName?: string;
   lastName?: string;
+  role?: string;
 }

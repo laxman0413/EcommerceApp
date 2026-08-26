@@ -79,9 +79,11 @@ export class AuthService {
     localStorage.setItem(ACCESS_TOKEN_KEY, response.accessToken);
     localStorage.setItem(REFRESH_TOKEN_KEY, response.refreshToken);
     const user: CurrentUser = {
-      email: response.email ?? '',
-      firstName: response.firstName,
-      lastName: response.lastName,
+      id: response.user.id,
+      email: response.user.email,
+      firstName: response.user.firstName,
+      lastName: response.user.lastName,
+      role: response.user.role,
     };
     localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
     this.currentUserSubject.next(user);

@@ -7,12 +7,19 @@
 
   @if (checkoutResult) {
     <div class="order-confirmation">
-      <p>Order placed successfully{{ checkoutResult.orderId ? ' — order #' + checkoutResult.orderId : '' }}.</p>
+      <p>
+        Order placed successfully — {{ checkoutResult.amount | currency:checkoutResult.currency }} charged
+        (order #{{ checkoutResult.id }}).
+      </p>
       <button type="button" (click)="continueShopping()">Continue shopping</button>
     </div>
   } @else {
     @if ((cart$ | async); as cart) {
       @if (cart.items.length > 0) {
+        @if (itemError) {
+          <p class="form-error">{{ itemError }}</p>
+        }
+
         <div class="cart-items">
           @for (item of cart.items; track item.productId) {
             <app-cart-item
@@ -27,41 +34,107 @@
           <div class="cart-total">Total: {{ cart.totalAmount | currency }}</div>
         }
 
-        <form class="checkout-form" [formGroup]="checkoutForm" (ngSubmit)="onCheckout()">
-          <h3>Checkout</h3>
+        @if (!showPaymentForm) {
+          <button type="button" class="proceed-btn" (click)="proceedToPayment()">
+            Proceed to Payment
+          </button>
+        } @else {
+        <form class="checkout-form" [formGroup]="checkoutForm" (submit)="onCheckout()">
+          <h3>Payment details</h3>
 
           <label for="cardholderName">Cardholder name</label>
-          <input id="cardholderName" type="text" formControlName="cardholderName" autocomplete="cc-name" />
+          <input
+            id="cardholderName"
+            type="text"
+            formControlName="cardholderName"
+            autocomplete="cc-name"
+            [class.invalid]="fieldInvalid('cardholderName')"
+          />
+          @if (fieldInvalid('cardholderName')) {
+            <p class="field-error">Cardholder name is required.</p>
+          }
 
           <label for="cardNumber">Card number</label>
-          <input id="cardNumber" type="text" formControlName="cardNumber" autocomplete="cc-number" inputmode="numeric" />
+          <input
+            id="cardNumber"
+            type="text"
+            formControlName="cardNumber"
+            autocomplete="cc-number"
+            inputmode="numeric"
+            [class.invalid]="fieldInvalid('cardNumber')"
+          />
+          @if (fieldInvalid('cardNumber')) {
+            <p class="field-error">Enter a valid card number (13-19 digits).</p>
+          }
 
           <div class="checkout-row">
             <div>
               <label for="expiryMonth">Exp. month</label>
-              <input id="expiryMonth" type="number" formControlName="expiryMonth" min="1" max="12" />
+              <input
+                id="expiryMonth"
+                type="number"
+                formControlName="expiryMonth"
+                min="1"
+                max="12"
+                [class.invalid]="fieldInvalid('expiryMonth')"
+              />
+              @if (fieldInvalid('expiryMonth')) {
+                <p class="field-error">1-12</p>
+              }
             </div>
             <div>
               <label for="expiryYear">Exp. year</label>
-              <input id="expiryYear" type="number" formControlName="expiryYear" />
+              <input
+                id="expiryYear"
+                type="number"
+                formControlName="expiryYear"
+                [class.invalid]="fieldInvalid('expiryYear')"
+              />
+              @if (fieldInvalid('expiryYear')) {
+                <p class="field-error">Invalid year</p>
+              }
             </div>
             <div>
               <label for="cvv">CVV</label>
-              <input id="cvv" type="text" formControlName="cvv" autocomplete="cc-csc" inputmode="numeric" />
+              <input
+                id="cvv"
+                type="text"
+                formControlName="cvv"
+                autocomplete="cc-csc"
+                inputmode="numeric"
+                [class.invalid]="fieldInvalid('cvv')"
+              />
+              @if (fieldInvalid('cvv')) {
+                <p class="field-error">3-4 digits</p>
+              }
             </div>
           </div>
 
           <label for="currency">Currency</label>
-          <input id="currency" type="text" formControlName="currency" />
+          <input
+            id="currency"
+            type="text"
+            formControlName="currency"
+            [class.invalid]="fieldInvalid('currency')"
+          />
+          @if (fieldInvalid('currency')) {
+            <p class="field-error">Currency is required.</p>
+          }
 
           @if (checkoutError) {
             <p class="form-error">{{ checkoutError }}</p>
           }
 
-          <button type="submit" [disabled]="checkingOut">
-            {{ checkingOut ? 'Placing order...' : 'Place order' }}
-          </button>
+          <div class="checkout-form-actions">
+            <button type="button" class="back-btn" (click)="backToCart()" [disabled]="checkingOut">
+              Back to cart
+            </button>
+            <button type="submit" [disabled]="checkingOut">
+              {{ checkingOut ? 'Placing order...' : 'Place order' }}
+            </button>
+          </div>
         </form>
+        }
       } @else {
         <p class="empty-state">Your cart is empty.</p>
       }

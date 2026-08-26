@@ -32,10 +32,11 @@ export interface CheckoutRequestDto {
   cvv?: string;
 }
 
-// Checkout response shape isn't documented; treated as loosely-typed.
 export interface CheckoutResult {
-  orderId?: string;
-  totalAmount?: number;
-  status?: string;
-  message?: string;
+  id: string;
+  status: string;
+  amount: number;
+  currency: string;
+  createdAt: string;
+  gatewayReference?: string;
 }

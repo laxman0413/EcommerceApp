@@ -1,72 +1,71 @@
 import {
   HttpErrorResponse,
   HttpEvent,
-  HttpHandlerFn,
-  HttpInterceptorFn,
+  HttpHandler,
+  HttpInterceptor,
   HttpRequest,
 } from '@angular/common/http';
-import { inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, filter, switchMap, take } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 
-let isRefreshing = false;
-const refreshedToken$ = new BehaviorSubject<string | null>(null);
-
 const AUTH_ENDPOINTS = ['/Auth/login', '/Auth/register', '/Auth/refresh', '/Auth/revoke'];
 
-function withToken(req: HttpRequest<unknown>, token: string): HttpRequest<unknown> {
-  return req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
-}
+@Injectable()
+export class AuthInterceptor implements HttpInterceptor {
+  private isRefreshing = false;
+  private readonly refreshedToken$ = new BehaviorSubject<string | null>(null);
 
-export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const authService = inject(AuthService);
+  constructor(private readonly authService: AuthService) {}
 
-  const isAuthEndpoint = AUTH_ENDPOINTS.some((path) => req.url.includes(path));
-  const accessToken = authService.getAccessToken();
-  const authReq = accessToken && !isAuthEndpoint ? withToken(req, accessToken) : req;
+  intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    const isAuthEndpoint = AUTH_ENDPOINTS.some((path) => req.url.includes(path));
+    const accessToken = this.authService.getAccessToken();
+    const authReq = accessToken && !isAuthEndpoint ? this.withToken(req, accessToken) : req;
 
-  return next(authReq).pipe(
-    catchError((error: unknown) => {
-      if (error instanceof HttpErrorResponse && error.status === 401 && !isAuthEndpoint) {
-        return handleUnauthorized(req, next, authService);
-      }
-      return throwError(() => error);
-    })
-  );
-};
-
-function handleUnauthorized(
-  req: HttpRequest<unknown>,
-  next: HttpHandlerFn,
-  authService: AuthService
-): Observable<HttpEvent<unknown>> {
-  const refreshToken = authService.getRefreshToken();
-  if (!refreshToken) {
-    return throwError(() => new HttpErrorResponse({ status: 401 }));
-  }
-
-  if (!isRefreshing) {
-    isRefreshing = true;
-    refreshedToken$.next(null);
-
-    return authService.refreshToken().pipe(
-      switchMap((response) => {
-        isRefreshing = false;
-        refreshedToken$.next(response.accessToken);
-        return next(withToken(req, response.accessToken));
-      }),
+    return next.handle(authReq).pipe(
       catchError((error: unknown) => {
-        isRefreshing = false;
-        authService.logout().subscribe();
+        if (error instanceof HttpErrorResponse && error.status === 401 && !isAuthEndpoint) {
+          return this.handleUnauthorized(req, next);
+        }
         return throwError(() => error);
       })
     );
   }
 
-  return refreshedToken$.pipe(
-    filter((token): token is string => token !== null),
-    take(1),
-    switchMap((token) => next(withToken(req, token)))
-  );
+  private withToken(req: HttpRequest<unknown>, token: string): HttpRequest<unknown> {
+    return req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
+  }
+
+  private handleUnauthorized(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    const refreshToken = this.authService.getRefreshToken();
+    if (!refreshToken) {
+      return throwError(() => new HttpErrorResponse({ status: 401 }));
+    }
+
+    if (!this.isRefreshing) {
+      this.isRefreshing = true;
+      this.refreshedToken$.next(null);
+
+      return this.authService.refreshToken().pipe(
+        switchMap((response) => {
+          this.isRefreshing = false;
+          this.refreshedToken$.next(response.accessToken);
+          return next.handle(this.withToken(req, response.accessToken));
+        }),
+        catchError((error: unknown) => {
+          this.isRefreshing = false;
+          this.authService.logout().subscribe();
+          return throwError(() => error);
+        })
+      );
+    }
+
+    return this.refreshedToken$.pipe(
+      filter((token): token is string => token !== null),
+      take(1),
+      switchMap((token) => next.handle(this.withToken(req, token)))
+    );
+  }
 }

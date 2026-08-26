@@ -29,8 +29,6 @@ public class CartController(
         if (!validation.IsValid)
             return BadRequest(validation.Errors.Select(e => new { field = e.PropertyName, error = e.ErrorMessage }));
 
-        // NotFoundAppException / ConflictAppException (unknown product, insufficient stock)
-        // are handled by ExceptionHandlingMiddleware — nothing to catch here.
         return Ok(await cartService.AddItemAsync(GetUserId(), dto));
     }
 

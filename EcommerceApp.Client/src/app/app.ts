@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { map } from 'rxjs/operators';
 import { AuthService } from './Core/services/auth.service';
@@ -12,14 +12,19 @@ import { CartService } from './Core/services/cart.service';
   styleUrl: './app.css',
 })
 export class App implements OnInit {
-  private readonly authService = inject(AuthService);
-  private readonly cartService = inject(CartService);
-  private readonly router = inject(Router);
+  readonly currentUser$;
+  readonly cartItemCount$;
 
-  readonly currentUser$ = this.authService.currentUser$;
-  readonly cartItemCount$ = this.cartService.cart$.pipe(
-    map((cart) => cart?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0)
-  );
+  constructor(
+    private readonly authService: AuthService,
+    private readonly cartService: CartService,
+    private readonly router: Router
+  ) {
+    this.currentUser$ = this.authService.currentUser$;
+    this.cartItemCount$ = this.cartService.cart$.pipe(
+      map((cart) => cart?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0)
+    );
+  }
 
   ngOnInit(): void {
     this.authService.currentUser$.subscribe((user) => {

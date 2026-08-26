@@ -1,10 +1,11 @@
-﻿using EcommerceApp.Application.Products.DTOs;
+﻿using EcommerceApp.Application.Common.DTOs;
+using EcommerceApp.Application.Products.DTOs;
 
 namespace EcommerceApp.Application.Products.Services;
 
 public interface IProductService
 {
-    Task<List<ProductDto>> GetAllAsync(string? category, string? search, bool? inStockOnly);
+    Task<PagedResultDto<ProductDto>> GetAllAsync(string? category, string? search, bool? inStockOnly, int page, int pageSize);
     Task<ProductDto?> GetByIdAsync(Guid id);
     Task<ProductDto> CreateAsync(CreateProductDto dto);
     Task<ProductDto?> UpdateAsync(Guid id, UpdateProductDto dto);

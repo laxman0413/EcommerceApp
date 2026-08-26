@@ -21,13 +21,22 @@
         <span class="product-stock out-of-stock">Out of stock</span>
       }
     </div>
-    <button
-      type="button"
-      class="add-to-cart-btn"
-      [disabled]="product.stockQuantity <= 0"
-      (click)="onAddToCart()"
-    >
-      Add to Cart
-    </button>
+    @if (inCart) {
+      <div class="product-actions">
+        <button type="button" class="remove-from-cart-btn" (click)="onRemoveFromCart()">
+          Remove from cart
+        </button>
+        <a class="go-to-cart-btn" routerLink="/cart">Go to cart</a>
+      </div>
+    } @else {
+      <button
+        type="button"
+        class="add-to-cart-btn"
+        [disabled]="product.stockQuantity <= 0"
+        (click)="onAddToCart()"
+      >
+        Add to Cart
+      </button>
+    }
   </div>
 </article>

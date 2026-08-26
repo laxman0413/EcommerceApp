@@ -16,9 +16,11 @@ public class ProductsController(IProductService service, IValidator<CreateProduc
     public async Task<IActionResult> GetAll(
         [FromQuery] string? category,
         [FromQuery] string? search,
-        [FromQuery] bool? inStockOnly)
+        [FromQuery] bool? inStockOnly,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20)
     {
-        var products = await service.GetAllAsync(category, search, inStockOnly);
+        var products = await service.GetAllAsync(category, search, inStockOnly, page, pageSize);
         return Ok(products);
     }
 

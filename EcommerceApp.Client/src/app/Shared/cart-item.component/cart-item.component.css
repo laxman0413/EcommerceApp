@@ -36,9 +36,11 @@
   font-size: 0.85rem;
 }
 
-.cart-item-quantity input {
+.cart-item-quantity select {
   width: 60px;
   padding: 0.25rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
 }
 
 .cart-item-total {

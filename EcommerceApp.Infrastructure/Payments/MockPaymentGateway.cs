@@ -3,9 +3,6 @@ using Microsoft.Extensions.Logging;
 
 namespace EcommerceApp.Infrastructure.Payments;
 
-// Stands in for a real processor's SDK call. Outcome is deterministic and keyed off the card
-// number using the same well-known test-card convention Stripe/Braintree use, so behavior is
-// easy to trigger from tests or Swagger without any config:
 //   4242 4242 4242 4242  -> always succeeds
 //   4000 0000 0000 0002  -> always declined by the "processor"
 //   4000 0000 0000 0119  -> simulates the processor itself being unreachable

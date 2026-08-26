@@ -91,3 +91,33 @@
   background: #b6b6b6;
   cursor: not-allowed;
 }
+
+.product-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+}
+
+.remove-from-cart-btn,
+.go-to-cart-btn {
+  flex: 1;
+  padding: 0.5rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  text-align: center;
+  cursor: pointer;
+}
+
+.remove-from-cart-btn {
+  border: 1px solid #c0392b;
+  background: #fff;
+  color: #c0392b;
+}
+
+.go-to-cart-btn {
+  border: none;
+  background: #2952e3;
+  color: #fff;
+  text-decoration: none;
+}

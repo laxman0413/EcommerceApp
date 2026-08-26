@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EcommerceApp.Application.Common.DTOs;
 using EcommerceApp.Application.Products.DTOs;
 using EcommerceApp.Domain.Entities;
 using EcommerceApp.Domain.Interfaces;
@@ -7,22 +8,22 @@ namespace EcommerceApp.Application.Products.Services;
 
 public class ProductService(IProductRepository repo, IMapper mapper) : IProductService
 {
-    public async Task<List<ProductDto>> GetAllAsync(string? category, string? search, bool? inStockOnly)
+    private const int MaxPageSize = 100;
+
+    public async Task<PagedResultDto<ProductDto>> GetAllAsync(string? category, string? search, bool? inStockOnly, int page, int pageSize)
     {
-        var products = await repo.GetAllAsync();
+        page = Math.Max(1, page);
+        pageSize = Math.Clamp(pageSize, 1, MaxPageSize);
 
-        if (!string.IsNullOrWhiteSpace(category))
-            products = products.Where(p => p.Category.Equals(category, StringComparison.OrdinalIgnoreCase)).ToList();
+        var (products, totalCount) = await repo.GetAllAsync(category, search, inStockOnly, page, pageSize);
 
-        if (!string.IsNullOrWhiteSpace(search))
-            products = products.Where(p =>
-                p.Name.Contains(search, StringComparison.OrdinalIgnoreCase) ||
-                (p.Description != null && p.Description.Contains(search, StringComparison.OrdinalIgnoreCase))).ToList();
-
-        if (inStockOnly == true)
-            products = products.Where(p => p.IsAvailable).ToList();
-
-        return mapper.Map<List<ProductDto>>(products);
+        return new PagedResultDto<ProductDto>
+        {
+            Items = mapper.Map<List<ProductDto>>(products),
+            Page = page,
+            PageSize = pageSize,
+            TotalCount = totalCount
+        };
     }
 
     public async Task<ProductDto?> GetByIdAsync(Guid id)

@@ -17,14 +17,33 @@
   </label>
 </section>
 
-@if (statusMessage) {
+<!-- @if (statusMessage) {
   <div class="status-banner">{{ statusMessage }}</div>
+} -->
+
+@if (loadError) {
+  <p class="form-error">{{ loadError }}</p>
 }
 
 <section class="product-grid">
-  @for (product of (products$ | async); track product.id) {
-    <app-product [product]="product" (addToCart)="onAddToCart($event)" />
-  } @empty {
-    <p class="empty-state">No products found.</p>
+  @if ((cartProductIds$ | async); as cartIds) {
+    @for (product of (products$ | async); track product.id) {
+      <app-product
+        [product]="product"
+        [inCart]="cartIds.has(product.id)"
+        (addToCart)="onAddToCart($event)"
+        (removeFromCart)="onRemoveFromCart($event)"
+      />
+    } @empty {
+      <p class="empty-state">No products found.</p>
+    }
   }
 </section>
+
+@if (totalPages > 1) {
+  <nav class="pagination" aria-label="Product pages">
+    <button type="button" (click)="goToPage(currentPage - 1)" [disabled]="currentPage <= 1">Previous</button>
+    <span class="pagination-status">Page {{ currentPage }} of {{ totalPages }} ({{ totalCount }} products)</span>
+    <button type="button" (click)="goToPage(currentPage + 1)" [disabled]="currentPage >= totalPages">Next</button>
+  </nav>
+}

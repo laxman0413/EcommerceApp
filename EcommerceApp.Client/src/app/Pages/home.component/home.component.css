@@ -20,6 +20,12 @@
   font-size: 0.9rem;
 }
 
+.form-error {
+  margin: 0 1rem 1rem;
+  color: #c0392b;
+  font-size: 0.9rem;
+}
+
 .status-banner {
   margin: 0 1rem 1rem;
   padding: 0.5rem 0.75rem;
@@ -39,4 +45,30 @@
 .empty-state {
   color: #777;
   padding: 1rem;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.5rem 1rem 1.5rem;
+}
+
+.pagination button {
+  padding: 0.5rem 0.9rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  color: #b6b6b6;
+  cursor: not-allowed;
+}
+
+.pagination-status {
+  font-size: 0.85rem;
+  color: #555;
 }

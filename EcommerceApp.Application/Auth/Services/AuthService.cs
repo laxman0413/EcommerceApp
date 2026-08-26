@@ -27,8 +27,7 @@ public class AuthService(
             throw new ConflictAppException("An account with this email already exists");
         }
 
-        // Every self-service registration is a plain User. Admin accounts are never created
-        // from client-supplied input — see the seeding note in Scripts/schema.sql.
+        
         var user = new User
         {
             Email = normalizedEmail,

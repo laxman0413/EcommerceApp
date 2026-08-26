@@ -13,8 +13,8 @@
         }
       </a>
 
-      @if ((currentUser$ | async); as user) {
-        <span class="user-email">{{ user.email }}</span>
+      @if ((currentUser$ | async); as curUser) {
+        <span class="user-email">{{ (currentUser$ | async)?.firstName }}</span>
         <button type="button" class="logout-btn" (click)="logout()">Logout</button>
       } @else {
         <a routerLink="/login">Login</a>
