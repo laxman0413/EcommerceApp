@@ -47,8 +47,6 @@ public class ProductRepository(IDbConnectionFactory connectionFactory) : IProduc
         return (items, totalCount);
     }
 
-    // COUNT(*) OVER() rides along on every row of the page, so Dapper needs a Product-shaped
-    // type with that extra column to bind into. Never returned from the repository itself.
     private class ProductRow : Product
     {
         public int TotalCount { get; set; }

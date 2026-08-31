@@ -8,7 +8,7 @@ namespace EcommerceApp.Application.Products.Services;
 
 public class ProductService(IProductRepository repo, IMapper mapper) : IProductService
 {
-    private const int MaxPageSize = 100;
+    private const int MaxPageSize = 50;
 
     public async Task<PagedResultDto<ProductDto>> GetAllAsync(string? category, string? search, bool? inStockOnly, int page, int pageSize)
     {
